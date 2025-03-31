@@ -4,10 +4,8 @@ import pandas as pd
 import plotly.express as px
 import dash_leaflet as dl
 
-# Criar app Dash
 app = dash.Dash(__name__)
 
-# Exemplo de dados fictícios com novas colunas e mais comunidades
 data = {
     "Comunidade": [
         "Quilombola A", "Quilombola B", "Indígena X", "Indígena Y", "Rural Z", 
@@ -37,11 +35,9 @@ data = {
 
 df = pd.DataFrame(data)
 
-# Layout do dashboard
 app.layout = html.Div([
     html.H1("Dashboard de Impacto das PCHs", style={'textAlign': 'center', 'color': '#333'}),
 
-    # Seção de gráficos e mapa
     html.Div([
         html.Div([
             html.H3("Selecione o Impacto", style={'textAlign': 'center', 'marginBottom': '10px'}),
@@ -62,7 +58,6 @@ app.layout = html.Div([
         ], style={'width': '48%', 'display': 'inline-block', 'padding': '10px'})
     ], style={'display': 'flex', 'justify-content': 'space-between', 'padding': '10px'}),
 
-    # Tabela de dados
     html.Div([
         dash_table.DataTable(
             id='tabela_dados',
@@ -78,33 +73,31 @@ app.layout = html.Div([
     ], style={'padding': '20px'})
 ])
 
-# Callback para atualizar gráfico, mapa e tabela ao selecionar na tabela e no Dropdown
 @app.callback(
     [Output('grafico_resistencia', 'figure'),
      Output('mapa_comunidades', 'children')],
     [Input('tabela_dados', 'selected_rows'),
      Input('impacto', 'value')]
 )
+
 def update_dashboard(selected_rows, impacto_filtro):
     # Filtra os dados com base no filtro do Dropdown
     if impacto_filtro != 'Todos':
         dff = df[df['Impacto'] == impacto_filtro]
     else:
         dff = df
-    
+
     if selected_rows:
         dff = dff.iloc[selected_rows]
 
-    # Gráfico com uma cor mais visível
+
     fig = px.bar(dff, x='Comunidade', y='Resistência', title="Resistência Comunitária",
                  color='Impacto', color_discrete_map={"Alto": "red", "Médio": "orange", "Baixo": "green"})
 
-    # Criar marcadores no mapa
     mapa_markers = [dl.Marker(position=[row["Latitude"], row["Longitude"]],
                                children=dl.Tooltip(row["Comunidade"])) for _, row in dff.iterrows()]
 
     return fig, mapa_markers
 
-# Rodar o app
 if __name__ == '__main__':
     app.run(debug=True)
