@@ -1,3 +1,9 @@
+https://github.com/user-attachments/assets/74c1ae71-fbc4-478c-952c-ae2509481cfc
+
+
+
+
+
 # Contextualização
 
 O Rio das Pedras, no interior do Piauí, é fundamental para 15 comunidades rurais,
